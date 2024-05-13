@@ -40,7 +40,7 @@ class Usuario(BaseModel):
       except Exception as e:
         print(f'Erro ao criar usuário: {e}')
         return None
-    
+        
     @classmethod
     def buscar_por_cpf(cls, user_cpf):
         try:

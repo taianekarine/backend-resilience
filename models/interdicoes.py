@@ -1,4 +1,3 @@
-
 import peewee
 from peewee import ForeignKeyField
 from uuid import uuid4
@@ -65,4 +64,18 @@ class Interdicoes(BaseModel):
     except cls.DoesNotExist:
       print(f'Erro: Interdição com ID {interdicao_id} não encontrada.')
 
-  
+  def serialize(self):
+        return {
+            'id': str(self.id),
+            'tipo': self.tipo,
+            'cep': self.cep,
+            'logradouro': self.logradouro,
+            'numero': self.numero,
+            'bairro': self.bairro,
+            'cidade': self.cidade,
+            'estado': self.estado,
+            'data': self.data.isoformat(),
+            'descricao': self.descricao,
+            'usuario_id': str(self.usuario.id)  # Supondo que você queira serializar também o ID do usuário relacionado
+            # Adicione outros campos conforme necessário
+        }
