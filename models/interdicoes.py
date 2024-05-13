@@ -1,6 +1,8 @@
 import peewee
 from peewee import ForeignKeyField
 from uuid import uuid4
+
+import werkzeug
 from config import BaseModel
 from models.user import Usuario
 
@@ -21,8 +23,8 @@ class Interdicoes(BaseModel):
   def criar(cls, tipo, cep, logradouro, numero, bairro, cidade, estado, data, descricao, usuario):
 
     if not tipo or not cep or not logradouro or not numero or not bairro or not cidade or not estado or not data or not descricao or not usuario:
-      print('Erro: Todos os campos obrigatórios devem ser preenchidos.')
-      return None
+      raise werkzeug.exceptions.BadRequest(f'Erro: Todos os campos obrigatórios devem ser preenchidos.')
+
     
     try:
       nova_interdicao = cls.create(
@@ -65,17 +67,16 @@ class Interdicoes(BaseModel):
       print(f'Erro: Interdição com ID {interdicao_id} não encontrada.')
 
   def serialize(self):
-        return {
-            'id': str(self.id),
-            'tipo': self.tipo,
-            'cep': self.cep,
-            'logradouro': self.logradouro,
-            'numero': self.numero,
-            'bairro': self.bairro,
-            'cidade': self.cidade,
-            'estado': self.estado,
-            'data': self.data.isoformat(),
-            'descricao': self.descricao,
-            'usuario_id': str(self.usuario.id)  # Supondo que você queira serializar também o ID do usuário relacionado
-            # Adicione outros campos conforme necessário
-        }
+    return {
+      'id': str(self.id),
+      'tipo': self.tipo,
+      'cep': self.cep,
+      'logradouro': self.logradouro,
+      'numero': self.numero,
+      'bairro': self.bairro,
+      'cidade': self.cidade,
+      'estado': self.estado,
+      'data': self.data.isoformat(),
+      'descricao': self.descricao,
+      'usuario_id': str(self.usuario.id)
+    }

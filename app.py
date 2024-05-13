@@ -1,9 +1,11 @@
 from flask import Flask
+import werkzeug
 from routes.user_routes import user_routes
 from routes.interdicoes_routes import interdicoes_routes
 from routes.login_routes import login_routes
 from models.user import Usuario
 from models.interdicoes import Interdicoes
+
 
 app = Flask(__name__)
 app.register_blueprint(user_routes)
@@ -21,5 +23,9 @@ def create_tables():
 
 create_tables()
 
+@app.errorhandler(werkzeug.exceptions.BadRequest)
+def handle_bad_request(e: Exception):
+    return str(e), 400
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=8000, debug=True)
