@@ -27,5 +27,13 @@ create_tables()
 def handle_bad_request(e: Exception):
     return str(e), 400
 
+@app.errorhandler(werkzeug.exceptions.NotFound)
+def handle_notfound_request(e: Exception):
+    return str(e), 404
+
+@app.errorhandler(werkzeug.exceptions.Unauthorized)
+def handle_unauthorized_request(e: Exception):
+    return str(e), 401
+
 if __name__ == '__main__':
     app.run(port=8000, debug=True)

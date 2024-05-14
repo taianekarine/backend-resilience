@@ -25,12 +25,10 @@ class Usuario(BaseModel):
     @classmethod
     def criar(cls, dados):
         if len(dados['senha']) < 6:
-          print('Erro: A senha precisa ter pelo menos 6 caracteres')
-          raise werkzeug.exceptions.BadRequest(f'Erro: A senha deve ter no mínimo 6 caracteres')
+          raise werkzeug.exceptions.BadRequest(f'A senha deve ter no mínimo 6 caracteres')
 
         if cls.select().where(cls.cpf == dados['cpf']).exists():
-          print(f'Erro: Já existe um usuário com o CPF "{dados['cpf']}"')
-          raise werkzeug.exceptions.BadRequest(f'Erro: Já existe um usuário com o CPF')
+          raise werkzeug.exceptions.BadRequest(f'Já existe um usuário com o CPF')
         
         hashed_password = bcrypt.hashpw(dados['senha'].encode('utf-8'), bcrypt.gensalt())
         dados['senha'] = hashed_password.decode('utf-8')
@@ -45,7 +43,7 @@ class Usuario(BaseModel):
             return usuario
         
         except DoesNotExist:
-          raise werkzeug.exceptions.BadRequest(f'Erro: Usuário não encontrado')
+          raise werkzeug.exceptions.NotFound(f'Usuário não encontrado')
 
 
     @classmethod
@@ -74,8 +72,7 @@ class Usuario(BaseModel):
           return usuario
       
       except DoesNotExist:
-          print(f'Usuário com ID {user_cpf} não encontrado.')
-          raise werkzeug.exceptions.BadRequest(f'Erro: Usuário com ID {user_cpf} não encontrado.')
+          raise werkzeug.exceptions.NotFound(f'Usuário com ID {user_cpf} não encontrado.')
 
         
     @classmethod
@@ -94,7 +91,7 @@ class Usuario(BaseModel):
             print(f'Cidade: {usuario_entity.cidade}')
             print(f'Estado: {usuario_entity.estado}')
         else:
-            print('Usuário não encontrado.')
+            raise werkzeug.exceptions.NotFound('Usuário não encontrado')
 
     @classmethod
     def deletar(cls, user_cpf):
@@ -104,5 +101,5 @@ class Usuario(BaseModel):
             print(f"Usuário com ID {user_cpf} deletado com sucesso.")
         
         except DoesNotExist:
-          raise werkzeug.exceptions.BadRequest(f'Erro: Usuário com ID {user_cpf} não encontrado.')
+          raise werkzeug.exceptions.BadRequest(f'Usuário {user_cpf} não encontrado.')
 

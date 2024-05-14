@@ -44,8 +44,8 @@ class Interdicoes(BaseModel):
       return nova_interdicao
     
     except Exception as e:
-      print(f'Erro ao criar interdição: {e}')
-      return None
+      raise werkzeug.exceptions.BadRequest('Erro ao criar interdição.')
+      
 
   @classmethod
   def buscar_por_tipo(cls, tipo):
@@ -64,7 +64,8 @@ class Interdicoes(BaseModel):
       print(f'Interdição com ID {interdicao_id} deletada com sucesso.')
 
     except cls.DoesNotExist:
-      print(f'Erro: Interdição com ID {interdicao_id} não encontrada.')
+      raise werkzeug.exceptions.NotFound('Interdição com ID {interdicao_id} não encontrada.')
+
 
   def serialize(self):
     return {

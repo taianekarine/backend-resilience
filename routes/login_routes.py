@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 import bcrypt
+import werkzeug
 from models.user import Usuario
 
 login_routes = Blueprint('login_routes', __name__)
@@ -13,4 +14,5 @@ def login():
         usuario = Usuario.buscar_por_cpf(cpf)
         if usuario and bcrypt.checkpw(senha.encode('utf-8'), usuario.senha.encode('utf-8')):
             return 'Login bem-sucedido', 200
-    return 'Credenciais inválidas', 401
+        
+        raise werkzeug.exceptions.Unauthorized('Login não autorizado')
