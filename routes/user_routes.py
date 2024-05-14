@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 import peewee
+import werkzeug
 from models.user import Usuario
 
 user_routes = Blueprint('user_routes', __name__)
@@ -11,7 +12,9 @@ def criar_usuario():
     if novo_usuario:
         return 'Usuário criado com sucesso!', 201
     else:
-        return 'Error ao criar cadastro', 400
+        raise werkzeug.exceptions.BadRequest('Erro ao criar usuário, verifique os dados inseridos.')
+
+
 
 @user_routes.route('/users/<cpf>', methods=['GET'])
 def buscar_usuario(cpf):
@@ -32,7 +35,7 @@ def buscar_usuario(cpf):
             'estado': usuario.estado
         }, 200
     else:
-        return 'Usuário não encontrado', 404
+        raise werkzeug.exceptions.NotFound('Usuário não encontrado')
 
 @user_routes.route('/users/<cpf>', methods=['PUT'])
 def atualizar_usuario(cpf):
@@ -41,7 +44,7 @@ def atualizar_usuario(cpf):
     if usuario_atualizado:
         return 'Usuário atualizado com sucesso', 200
     else:
-        return 'Erro ao atualizar usuário', 404
+        raise werkzeug.exceptions.NotFound('Não foi possivél prosseguir com a atualização dos dados do usuário.')
 
 @user_routes.route('/users/<cpf>', methods=['DELETE'])
 def deletar_usuario(cpf):
