@@ -6,6 +6,11 @@ from routes.login_routes import login_routes
 from models.user import Usuario
 from models.interdicoes import Interdicoes
 
+from dotenv import load_dotenv
+
+# Carrega as variáveis de ambiente do arquivo .env
+load_dotenv()
+
 
 app = Flask(__name__)
 app.register_blueprint(user_routes)
