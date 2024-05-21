@@ -2,6 +2,8 @@ import bcrypt
 import peewee
 from peewee import DoesNotExist
 from uuid import uuid4
+
+import werkzeug
 from config import BaseModel
 
 class Usuario(BaseModel):
@@ -22,13 +24,12 @@ class Usuario(BaseModel):
 
     @classmethod
     def criar(cls, dados):
-      try:
         if len(dados['senha']) < 6:
-         # print('Erro: A senha precisa ter pelo menos 6 caracteres')
+          print('Erro: A senha precisa ter pelo menos 6 caracteres')
           return None
         
         if cls.select().where(cls.cpf == dados['cpf']).exists():
-          #print(f'Erro: Já existe um usuário com o CPF "{dados['cpf']}"')
+          print(f'Erro: Já existe um usuário com o CPF "{dados['cpf']}"')
           return None
         
         hashed_password = bcrypt.hashpw(dados['senha'].encode('utf-8'), bcrypt.gensalt())
@@ -36,11 +37,7 @@ class Usuario(BaseModel):
 
         novo_usuario = cls.create(**dados)
         return novo_usuario
-    
-      except Exception as e:
-        print(f'Erro ao criar usuário: {e}')
-        return None
-    
+        
     @classmethod
     def buscar_por_cpf(cls, user_cpf):
         try:
@@ -48,7 +45,8 @@ class Usuario(BaseModel):
             return usuario
         
         except DoesNotExist:
-            return None
+          raise werkzeug.exceptions.NotFound(f'Usuário não encontrado')
+
 
     @classmethod
     def alterar(cls, user_cpf, dados):
@@ -76,8 +74,8 @@ class Usuario(BaseModel):
           return usuario
       
       except DoesNotExist:
-          print(f"Usuário com ID {user_cpf} não encontrado.")
-          return None
+          raise werkzeug.exceptions.NotFound(f'Usuário com ID {user_cpf} não encontrado.')
+
         
     @classmethod
     def listar(cls, cpf):
@@ -95,7 +93,7 @@ class Usuario(BaseModel):
             print(f'Cidade: {usuario_entity.cidade}')
             print(f'Estado: {usuario_entity.estado}')
         else:
-            print('Usuário não encontrado.')
+            raise werkzeug.exceptions.NotFound('Usuário não encontrado')
 
     @classmethod
     def deletar(cls, user_cpf):
@@ -105,4 +103,5 @@ class Usuario(BaseModel):
             print(f"Usuário com ID {user_cpf} deletado com sucesso.")
         
         except DoesNotExist:
-            print(f"Usuário com ID {user_cpf} não encontrado.")
+          raise werkzeug.exceptions.BadRequest(f'Usuário {user_cpf} não encontrado.')
+
