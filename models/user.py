@@ -25,10 +25,12 @@ class Usuario(BaseModel):
     @classmethod
     def criar(cls, dados):
         if len(dados['senha']) < 6:
-          raise werkzeug.exceptions.BadRequest(f'A senha deve ter no mínimo 6 caracteres')
-
+          print('Erro: A senha precisa ter pelo menos 6 caracteres')
+          return None
+        
         if cls.select().where(cls.cpf == dados['cpf']).exists():
-          raise werkzeug.exceptions.BadRequest(f'Já existe um usuário com o CPF')
+          print(f'Erro: Já existe um usuário com o CPF "{dados['cpf']}"')
+          return None
         
         hashed_password = bcrypt.hashpw(dados['senha'].encode('utf-8'), bcrypt.gensalt())
         dados['senha'] = hashed_password.decode('utf-8')
