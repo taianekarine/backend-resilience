@@ -1,6 +1,4 @@
 rascunho.py
-.env
 
 # local env files
-.env*.local
-
+.env
