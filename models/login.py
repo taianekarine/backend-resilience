@@ -3,11 +3,12 @@ from models.user import Usuario
 import jwt
 import datetime
 from flask import Flask, request, jsonify
+import os
 
 app = Flask(__name__)
 
 # Configuração da chave secreta para o JWT
-SECRET_KEY = 'asjaojaodvjado'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 class Autenticacao:
     @staticmethod
@@ -36,32 +37,6 @@ class Autenticacao:
             return user
         else:
             return None
-
-@app.route('/login', methods=['POST'])
-def login_route():
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
-
-    token = Autenticacao.login(username, password)
-    if token:
-        return jsonify({'token': token})
-    else:
-        return jsonify({'message': 'Invalid credentials'}), 401
-
-@app.route('/protected', methods=['GET'])
-def protected():
-    token = request.headers.get('Authorization')
-    if not token:
-        return jsonify({'message': 'Token is missing'}), 401
-
-    token = token.split(" ")[1]  # Remove o prefixo "Bearer "
-
-    decoded_token = Autenticacao.validate_token(token)
-    if decoded_token:
-        return jsonify({'message': f'Welcome {decoded_token["username"]}!'})
-    else:
-        return jsonify({'message': 'Invalid token'}), 401
 
 if __name__ == '_main_':
     app.run(debug=True)

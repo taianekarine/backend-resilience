@@ -6,6 +6,11 @@ from routes.login_routes import login_routes
 from models.user import Usuario
 from models.interdicoes import Interdicoes
 
+from dotenv import load_dotenv
+
+# Carrega as variáveis de ambiente do arquivo .env
+load_dotenv()
+
 
 app = Flask(__name__)
 app.register_blueprint(user_routes)
@@ -17,11 +22,14 @@ def create_tables():
     Usuario.create_table()
     Interdicoes.create_table()
 
-    # Comente a linha abaixo se não desejar excluir as tabelas ao iniciar o aplicativo
-    # Usuario.drop_table()
-    # Interdicoes.drop_table()
+def delete_tables():
+    Usuario.drop_table()
+    Interdicoes.drop_table()
 
 create_tables()
+
+# Comente a linha abaixo se não desejar excluir as tabelas ao iniciar o aplicativo
+# delete_tables()
 
 @app.errorhandler(werkzeug.exceptions.BadRequest)
 def handle_bad_request(e: Exception):
