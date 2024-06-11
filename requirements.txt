@@ -3,3 +3,4 @@ werkzeug
 bcrypt
 Flask 
 JWT
+gunicorn
