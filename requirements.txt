@@ -1,6 +1,5 @@
 peewee
 werkzeug
 bcrypt
-Flask
-PyJWT
-uuid4
+Flask 
+JWT
