@@ -28,8 +28,8 @@ class Usuario(BaseModel):
           print('Erro: A senha precisa ter pelo menos 6 caracteres')
           return None
         
-        if cls.select().where(cls.cpf == dados['cpf']).exists():
-          print(f'Erro: Já existe um usuário com o CPF {dados['cpf']}')
+        if cls.select().where(cls.cpf == dados["cpf"]).exists():
+          print(f'Erro: Já existe um usuário com o CPF {dados["cpf"]}')
           return None
         
         hashed_password = bcrypt.hashpw(dados['senha'].encode('utf-8'), bcrypt.gensalt())
